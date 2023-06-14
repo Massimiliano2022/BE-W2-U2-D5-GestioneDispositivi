@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.github.javafaker.Faker;
 
+import it.epicode.auth.AuthController;
 import it.epicode.payloads.UtenteRegistrationPayload;
 import it.epicode.utente.Utente;
 import it.epicode.utente.UtenteRepository;
@@ -23,6 +24,9 @@ public class UtenteRunner implements CommandLineRunner {
 	@Autowired
 	UtenteRepository utenteRepo;
 
+	@Autowired
+	AuthController authController;
+
 	@Override
 	public void run(String... args) throws Exception {
 		Faker faker = new Faker(new Locale("it"));
@@ -33,10 +37,10 @@ public class UtenteRunner implements CommandLineRunner {
 				String nome = faker.name().firstName();
 				String cognome = faker.name().lastName();
 				String email = faker.internet().emailAddress();
-				String password = faker.internet().password();
+				String password = "1234";
 				UtenteRegistrationPayload utente = new UtenteRegistrationPayload(username, nome, cognome, email,
 						password);
-				utenteService.create(utente);
+				authController.register(utente);
 
 			}
 		}

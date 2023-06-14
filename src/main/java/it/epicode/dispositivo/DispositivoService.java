@@ -51,4 +51,10 @@ public class DispositivoService {
 		dispositivoRepo.delete(found);
 	}
 
+	public Dispositivo findByIdAndDisponibilitaDispositivo(UUID idDispositivo,
+			DisponibilitaDispositivo disponibilitaDispositivo) {
+		return dispositivoRepo.findByIdAndDisponibilitaDispositivo(idDispositivo, disponibilitaDispositivo).orElseThrow(
+				() -> new NotFoundException("Il dispositivo con " + idDispositivo + " non è disponibile!"));
+	}
+
 }

@@ -8,16 +8,22 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import it.epicode.dispositivo.Dispositivo;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
+//@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "utenti")
 @Data
 @NoArgsConstructor
@@ -33,8 +39,17 @@ public class Utente implements UserDetails {
 	private String email;
 	private String password;
 
+	private boolean isEnabled;
+	private boolean isCredentialsNonExpired;
+	private boolean isAccountNonExpired;
+	private boolean isAccountNonLocked;
 	@Enumerated(EnumType.STRING)
 	private Role role;
+
+	@OneToMany
+	@JoinColumn(name = "dispositivo_id", referencedColumnName = "id", nullable = true)
+	@JsonManagedReference
+	private List<Dispositivo> dipositiviAssegnati;
 
 	public Utente(String username, String nome, String cognome, String email, String password) {
 		setUsername(username);
@@ -42,6 +57,10 @@ public class Utente implements UserDetails {
 		setCognome(cognome);
 		setEmail(email);
 		setPassword(password);
+		setEnabled(true);
+		setAccountNonExpired(true);
+		setCredentialsNonExpired(true);
+		setAccountNonLocked(true);
 		setRole(Role.USER);
 	}
 
@@ -53,24 +72,24 @@ public class Utente implements UserDetails {
 	@Override
 	public boolean isAccountNonExpired() {
 		// TODO Auto-generated method stub
-		return false;
+		return this.isAccountNonExpired;
 	}
 
 	@Override
 	public boolean isAccountNonLocked() {
 		// TODO Auto-generated method stub
-		return false;
+		return this.isAccountNonLocked;
 	}
 
 	@Override
 	public boolean isCredentialsNonExpired() {
 		// TODO Auto-generated method stub
-		return false;
+		return this.isCredentialsNonExpired;
 	}
 
 	@Override
 	public boolean isEnabled() {
 		// TODO Auto-generated method stub
-		return false;
+		return this.isEnabled;
 	}
 }

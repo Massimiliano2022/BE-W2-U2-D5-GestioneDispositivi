@@ -5,17 +5,17 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import it.epicode.payloads.UtenteRegistrationPayload;
+import it.epicode.payloads.UtenteInfoPayload;
 
 @RestController
 @RequestMapping("/utenti")
@@ -24,30 +24,34 @@ public class UtenteController {
 	@Autowired
 	private UtenteService utenteService;
 
+	// AUTH
+	// OK
 	@GetMapping("")
-	public List<Utente> getUtenti() {
-		return utenteService.find();
+	public ResponseEntity<List<Utente>> getUtenti() {
+		List<Utente> listaUtenti = utenteService.find();
+		if (!listaUtenti.isEmpty()) {
+			return new ResponseEntity<>(listaUtenti, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
 	}
 
-	@PostMapping("")
-	@ResponseStatus(HttpStatus.CREATED)
-	public Utente saveUser(@RequestBody UtenteRegistrationPayload body) {
-		return utenteService.create(body);
-
-	}
-
+	// OK
 	@GetMapping("/{utenteId}")
-	public Utente getUser(@PathVariable UUID utenteId) throws Exception {
-		return utenteService.findById(utenteId);
-
+	ResponseEntity<UtenteInfoPayload> getUser(@PathVariable UUID utenteId) throws Exception {
+		Utente found = utenteService.findById(utenteId);
+		return new ResponseEntity<>(
+				new UtenteInfoPayload(found.getUsername(), found.getNome(), found.getCognome(), found.getEmail()),
+				HttpStatus.OK);
 	}
 
+	// OK
 	@PutMapping("/{utenteId}")
-	public Utente updateUser(@PathVariable UUID utenteId, @RequestBody Utente body) throws Exception {
+	public Utente updateUser(@PathVariable UUID utenteId, @RequestBody UtenteInfoPayload body) throws Exception {
 		return utenteService.findByIdAndUpdate(utenteId, body);
-
 	}
 
+	// OK
 	@DeleteMapping("/{utenteId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteUser(@PathVariable UUID utenteId) throws Exception {

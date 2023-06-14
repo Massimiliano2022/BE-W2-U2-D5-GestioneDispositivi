@@ -40,12 +40,16 @@ public class JWTAuthFilter extends OncePerRequestFilter {
 
 		Utente utenteCorrente = utenteService.findByEmail(email);
 
+		System.out.println("******************************** " + email);
+
 		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(utenteCorrente, null,
 				utenteCorrente.getAuthorities());
 
 		authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
 		SecurityContextHolder.getContext().setAuthentication(authToken);
+
+		filterChain.doFilter(request, response);
 
 		// 4. Se non OK -> 401 "Per favore effettua di nuovo il login"
 
@@ -55,4 +59,5 @@ public class JWTAuthFilter extends OncePerRequestFilter {
 	protected boolean shouldNotFilter(HttpServletRequest request) {
 		return new AntPathMatcher().match("/auth/**", request.getServletPath());
 	}
+
 }

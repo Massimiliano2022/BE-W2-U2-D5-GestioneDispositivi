@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import it.epicode.exceptions.BadRequestException;
 import it.epicode.exceptions.NotFoundException;
+import it.epicode.payloads.UtenteInfoPayload;
 import it.epicode.payloads.UtenteRegistrationPayload;
 
 @Service
@@ -41,10 +42,23 @@ public class UtenteService {
 				.orElseThrow(() -> new NotFoundException("Utente con " + email + " non trovato!"));
 	}
 
+	public Utente findByIdAndUpdate(UUID id, UtenteInfoPayload u) throws NotFoundException {
+		Utente found = this.findById(id);
+
+		found.setId(id);
+		found.setUsername(u.getUsername());
+		found.setNome(u.getNome());
+		found.setCognome(u.getCognome());
+		found.setEmail(u.getEmail());
+
+		return utenteRepo.save(found);
+	}
+
 	public Utente findByIdAndUpdate(UUID id, Utente u) throws NotFoundException {
 		Utente found = this.findById(id);
 
 		found.setId(id);
+		found.setUsername(u.getUsername());
 		found.setNome(u.getNome());
 		found.setCognome(u.getCognome());
 		found.setEmail(u.getEmail());

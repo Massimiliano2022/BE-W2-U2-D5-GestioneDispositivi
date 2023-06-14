@@ -49,12 +49,13 @@ public class ExceptionsHandler {
 		return new ResponseEntity<ErrorsPayload>(payload, HttpStatus.NOT_FOUND);
 	}
 
-	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ErrorsPayload> handleGeneric(Exception e) {
-		System.out.println(e);
-		ErrorsPayload payload = new ErrorsPayload("Errore Generico", new Date(), 500);
-
-		return new ResponseEntity<ErrorsPayload>(payload, HttpStatus.INTERNAL_SERVER_ERROR);
-	}
+	/*
+	 * @ExceptionHandler(Exception.class) public ResponseEntity<ErrorsPayload>
+	 * handleGeneric(Exception e) { System.out.println(e); ErrorsPayload payload =
+	 * new ErrorsPayload("Errore Generico", new Date(), 500);
+	 * 
+	 * return new ResponseEntity<ErrorsPayload>(payload,
+	 * HttpStatus.INTERNAL_SERVER_ERROR); }
+	 */
 
 }
